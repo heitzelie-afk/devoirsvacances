@@ -278,8 +278,9 @@ function subjectCardHtml(subject, levelNum) {
     ? `${quizProg.attempts} tentative(s) · meilleur score ${quizProg.best}%`
     : `${subject.questions.length} questions`;
   const quizLabel = quizProg ? "Refaire le quiz ▶" : "Quiz ▶";
+  const gameLabels = { memory: "Jeu de mémo", sort: "Jeu de tri", scramble: "Jeu des lettres" };
   const gameBtnHtml = subject.game
-    ? `<button class="btn-primary" data-game="${subject.id}">🎮 ${subject.game.type === "memory" ? "Jeu de mémo" : "Jeu de tri"} ▶</button>`
+    ? `<button class="btn-primary" data-game="${subject.id}">🎮 ${gameLabels[subject.game.type] || "Jouer"} ▶</button>`
     : "";
   return `
     <div class="subject-card">
@@ -517,8 +518,20 @@ function selectGame(subjectId) {
     });
     gameState = { type: "memory", cards: shuffle(cards), flipped: [], matched: [], mistakes: 0, locked: false };
     state.screen = "memorygame";
+  } else if (game.type === "scramble") {
+    gameState = { type: "scramble", words: shuffle(game.words), wordIndex: 0, mistakes: 0, locked: false };
+    loadScrambleWord();
+    state.screen = "scramblegame";
   }
   render();
+}
+
+function loadScrambleWord() {
+  const word = gameState.words[gameState.wordIndex];
+  gameState.letters = shuffle(word.split("").map((ch, i) => ({ ch, id: i, used: false })));
+  gameState.built = "";
+  gameState.locked = false;
+  speak(word);
 }
 
 function renderSortGame() {
@@ -675,16 +688,86 @@ function handleMemoryClick(idx) {
   }
 }
 
+// ---------- Mini-jeu : Mots mêlés (reconstituer un mot dicté) ----------
+function renderScrambleGame() {
+  const subject = getCurrentSubject();
+  const totalWords = gameState.words.length;
+  const progressPct = Math.round((gameState.wordIndex / totalWords) * 100);
+  const word = gameState.words[gameState.wordIndex];
+
+  const builtHtml = word.split("").map((_, i) => `<span class="scramble-slot">${gameState.built[i] || ""}</span>`).join("");
+  const tilesHtml = gameState.letters.map((tile) => `
+    <button class="letter-tile" data-id="${tile.id}" ${tile.used ? "disabled" : ""}>${tile.ch}</button>`).join("");
+
+  app.innerHTML = `
+    <div class="quiz-card">
+      <div class="quiz-top-row">
+        <div class="question-count">${subject.icon} ${subject.title} — Jeu des lettres (mot ${gameState.wordIndex + 1} / ${totalWords})</div>
+        <div class="mascot" id="mascot">${MASCOTS[state.childKey] || "🙂"}</div>
+      </div>
+      <div class="progress-track"><div class="progress-fill" style="width:${progressPct}%"></div></div>
+      <p class="game-instructions">${subject.game.instructions}</p>
+      <div class="dictee-controls">
+        <button class="btn-secondary" id="btn-speak-scramble">🔊 Réécouter</button>
+      </div>
+      <div class="scramble-built">${builtHtml}</div>
+      <div class="letter-tiles">${tilesHtml}</div>
+      <div id="feedback-zone"></div>
+    </div>`;
+
+  document.getElementById("btn-speak-scramble").addEventListener("click", () => speak(word));
+  app.querySelectorAll(".letter-tile").forEach((btn) => {
+    btn.addEventListener("click", () => handleScrambleTileClick(parseInt(btn.getAttribute("data-id"), 10), btn));
+  });
+}
+
+function handleScrambleTileClick(tileId, tileEl) {
+  if (gameState.locked) return;
+  const tile = gameState.letters.find((t) => t.id === tileId);
+  if (!tile || tile.used) return;
+  const word = gameState.words[gameState.wordIndex];
+  const expected = word[gameState.built.length];
+
+  if (tile.ch === expected) {
+    tile.used = true;
+    gameState.built += tile.ch;
+    playSound("ok");
+    if (gameState.built.length === word.length) {
+      gameState.locked = true;
+      addPoints(state.childKey, 15);
+      spawnConfetti(10);
+      renderScrambleGame();
+      const zone = document.getElementById("feedback-zone");
+      const isLast = gameState.wordIndex + 1 >= gameState.words.length;
+      zone.innerHTML = `<div class="feedback ok">Bravo ! Le mot était bien « ${word} » 🎉</div>`;
+      setTimeout(() => {
+        if (isLast) { finishGame(); return; }
+        gameState.wordIndex++;
+        loadScrambleWord();
+        render();
+      }, 1200);
+    } else {
+      renderScrambleGame();
+    }
+  } else {
+    gameState.mistakes++;
+    playSound("ko");
+    if (tileEl) { tileEl.classList.add("tile-shake"); setTimeout(() => tileEl.classList.remove("tile-shake"), 400); }
+  }
+}
+
 // ---------- Fin de mini-jeu ----------
 function finishGame() {
   const subject = getCurrentSubject();
-  const key = subject.id + "__" + (gameState.type === "memory" ? "memory" : "game");
   let percent;
   if (gameState.type === "sort") {
     percent = Math.round((gameState.total / (gameState.total + gameState.mistakes)) * 100);
-  } else {
+  } else if (gameState.type === "memory") {
     const totalPairs = subject.game.pairs.length;
     percent = Math.round((totalPairs / (totalPairs + gameState.mistakes)) * 100);
+  } else if (gameState.type === "scramble") {
+    const totalWords = subject.game.words.length;
+    percent = Math.round((totalWords / (totalWords + gameState.mistakes)) * 100);
   }
   setSubjectProgress(state.childKey, subject.id + "__game", percent);
   const newBadges = finishSubjectAndAward(percent);
@@ -699,12 +782,13 @@ function renderGameResult() {
   const subject = getCurrentSubject();
   const percent = state.lastGamePercent;
   const stars = percent >= 100 ? 3 : percent >= 70 ? 2 : percent >= 40 ? 1 : 0;
+  const doneMsg = gameState.type === "scramble" ? "Bravo, tu as retrouvé tous les mots ! 🎉" : "Bravo, tu as tout trié/associé correctement ! 🎉";
   app.innerHTML = `
     <div class="result-card">
       <div>${subject.icon} <strong>${subject.title}</strong> — Mini-jeu terminé !</div>
       <div class="result-stars">${"★".repeat(stars)}${"☆".repeat(3 - stars)}</div>
       <div class="result-score">${state.lastGameMistakes} erreur(s) · score ${percent}%</div>
-      <p>Bravo, tu as tout trié/associé correctement ! 🎉</p>
+      <p>${doneMsg}</p>
       <div class="actions-row" style="justify-content:center">
         <button class="btn-secondary" id="btn-retry-game">🔁 Rejouer</button>
         <button class="btn-primary" id="btn-back-subjects">📚 Autres matières</button>
@@ -727,6 +811,7 @@ function render() {
   else if (state.screen === "result") renderResult();
   else if (state.screen === "sortgame") renderSortGame();
   else if (state.screen === "memorygame") renderMemoryGame();
+  else if (state.screen === "scramblegame") renderScrambleGame();
   else if (state.screen === "gameresult") renderGameResult();
 }
 

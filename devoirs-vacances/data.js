@@ -238,7 +238,12 @@ const DATA = {
           { type: "dictee", word: "orchestre", q: "Écoute et écris le mot." },
           { type: "dictee", word: "silence", q: "Écoute et écris le mot." },
           { type: "dictee", word: "récemment", q: "Écoute et écris le mot." }
-        ]
+        ],
+        game: {
+          type: "scramble",
+          instructions: "Écoute le mot puis clique les lettres mélangées dans le bon ordre pour le reconstituer !",
+          words: ["automne", "bonheur", "difficile", "beaucoup", "toujours", "environ", "quelquefois", "exercice", "hasard", "orchestre", "silence", "récemment"]
+        }
       },
       {
         id: "multiplication",

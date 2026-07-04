@@ -471,3 +471,42 @@ button:active { transform: scale(0.96); }
 .memory-card-back { background: var(--accent2); color: #fff; font-size: 1.6rem; }
 .memory-card-front { background: #fff; border: 2px solid var(--accent2); transform: rotateY(180deg); }
 .memory-card.matched .memory-card-front { background: #eafff1; border-color: var(--ok); }
+
+/* Mini-jeu : mots mêlés */
+.scramble-built {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+.scramble-slot {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 40px;
+  border-bottom: 3px solid var(--accent2);
+  font-size: 1.4rem;
+  font-weight: bold;
+  text-transform: lowercase;
+}
+.letter-tiles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+.letter-tile {
+  width: 46px;
+  height: 46px;
+  border-radius: 12px;
+  border: 2px solid var(--accent);
+  background: #fff;
+  font-size: 1.3rem;
+  font-weight: bold;
+  text-transform: lowercase;
+}
+.letter-tile:disabled { opacity: 0; pointer-events: none; }
+.tile-shake { animation: mascot-shake .4s ease; border-color: var(--ko) !important; }
