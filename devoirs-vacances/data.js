@@ -66,7 +66,31 @@ const DATA = {
           { type: "num", q: "Un ruban de 45 cm + un ruban de 30 cm = combien de cm en tout ?", answer: 75 },
           { type: "num", q: "Une ficelle mesure 4 m. Combien de centimètres cela fait-il ?", answer: 400 },
           { type: "qcm", q: "Pour mesurer la longueur d'une piscine, on utilise plutôt...", choices: ["le centimètre", "le mètre"], answer: 1 }
-        ]
+        ],
+        game: {
+          type: "sort",
+          instructions: "Glisse (ou touche) chaque objet dans le bon panier : on le mesure plutôt en cm ou en m ?",
+          categories: [
+            { id: "cm", label: "Centimètres (cm)", icon: "📏" },
+            { id: "m", label: "Mètres (m)", icon: "📐" }
+          ],
+          items: [
+            { label: "✏️ Un crayon", category: "cm" },
+            { label: "📏 Une règle", category: "cm" },
+            { label: "📱 Un téléphone", category: "cm" },
+            { label: "🧦 Une chaussette", category: "cm" },
+            { label: "🍫 Une tablette de chocolat", category: "cm" },
+            { label: "🔑 Une clé", category: "cm" },
+            { label: "🖊️ Un stylo", category: "cm" },
+            { label: "🚌 Un bus", category: "m" },
+            { label: "🏫 Une salle de classe", category: "m" },
+            { label: "🌳 Un arbre", category: "m" },
+            { label: "🚗 Une voiture", category: "m" },
+            { label: "🛏️ Un lit", category: "m" },
+            { label: "🚪 Une porte", category: "m" },
+            { label: "🏊 Une piscine", category: "m" }
+          ]
+        }
       },
       {
         id: "grammaire",
