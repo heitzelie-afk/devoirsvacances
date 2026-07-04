@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "terre-de-reformes",
+      "runtimeExecutable": "powershell",
+      "runtimeArgs": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", "terre-de-reformes/server.ps1"],
+      "port": 8420
+    },
+    {
+      "name": "devoirs-vacances",
+      "runtimeExecutable": "powershell",
+      "runtimeArgs": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", "devoirs-vacances/server.ps1"],
+      "port": 8421
+    }
+  ]
+}
