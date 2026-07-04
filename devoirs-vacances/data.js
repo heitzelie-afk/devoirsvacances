@@ -149,7 +149,32 @@ const DATA = {
           { type: "qcm", q: "Un complément circonstanciel peut-il être déplacé dans la phrase ?", choices: ["Oui", "Non"], answer: 0 },
           { type: "libre", q: "Écris une phrase avec un complément circonstanciel de TEMPS.", sample: "Demain, nous irons au zoo." },
           { type: "libre", q: "Écris une phrase avec un complément circonstanciel de LIEU.", sample: "Les poissons nagent dans l'aquarium." }
-        ]
+        ],
+        game: {
+          type: "sort",
+          instructions: "Glisse (ou touche) chaque complément circonstanciel dans le bon panier : lieu, temps ou manière ?",
+          categories: [
+            { id: "lieu", label: "Lieu", icon: "📍" },
+            { id: "temps", label: "Temps", icon: "⏰" },
+            { id: "maniere", label: "Manière", icon: "🎭" }
+          ],
+          items: [
+            { label: "dans le jardin", category: "lieu" },
+            { label: "à la piscine", category: "lieu" },
+            { label: "sous la table", category: "lieu" },
+            { label: "au bord de la mer", category: "lieu" },
+            { label: "dans sa chambre", category: "lieu" },
+            { label: "demain matin", category: "temps" },
+            { label: "hier soir", category: "temps" },
+            { label: "le week-end", category: "temps" },
+            { label: "la semaine prochaine", category: "temps" },
+            { label: "en été", category: "temps" },
+            { label: "rapidement", category: "maniere" },
+            { label: "silencieusement", category: "maniere" },
+            { label: "avec joie", category: "maniere" },
+            { label: "doucement", category: "maniere" }
+          ]
+        }
       },
       {
         id: "plurielou",
