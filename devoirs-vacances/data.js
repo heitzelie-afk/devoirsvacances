@@ -28,7 +28,19 @@ const DATA = {
           { type: "qcm", q: "Trouve l'intrus (ce n'est pas un animal) :", choices: ["chat", "chien", "lion", "chaise"], answer: 3 },
           { type: "text", q: "Mets au pluriel : « un chat » →", answer: ["des chats", "chats"] },
           { type: "text", q: "Mets au pluriel : « une fleur » →", answer: ["des fleurs", "fleurs"] }
-        ]
+        ],
+        game: {
+          type: "memory",
+          instructions: "Retourne deux cartes pour retrouver les paires de mots contraires !",
+          pairs: [
+            { a: "grand", b: "petit" },
+            { a: "jour", b: "nuit" },
+            { a: "chaud", b: "froid" },
+            { a: "rapide", b: "lent" },
+            { a: "content", b: "triste" },
+            { a: "ouvert", b: "fermé" }
+          ]
+        }
       },
       {
         id: "nombres",
@@ -46,7 +58,19 @@ const DATA = {
           { type: "num", q: "Combien d'unités dans 47 ?", answer: 7 },
           { type: "num", q: "100 − 10 = ?", answer: 90 },
           { type: "num", q: "Léo a 8 billes, il en gagne 5. Combien a-t-il de billes en tout ?", answer: 13 }
-        ]
+        ],
+        game: {
+          type: "memory",
+          instructions: "Retourne deux cartes pour trouver un calcul et son résultat !",
+          pairs: [
+            { a: "12 + 5", b: "17" },
+            { a: "20 + 30", b: "50" },
+            { a: "45 − 3", b: "42" },
+            { a: "16 + 8", b: "24" },
+            { a: "18 − 6", b: "12" },
+            { a: "7 + 7", b: "14" }
+          ]
+        }
       },
       {
         id: "longueurs",
@@ -107,7 +131,12 @@ const DATA = {
           { type: "dictee", word: "maison", q: "Écoute le mot et écris-le." },
           { type: "dictee", word: "vélo", q: "Écoute le mot et écris-le." },
           { type: "dictee", word: "papa", q: "Écoute le mot et écris-le." }
-        ]
+        ],
+        game: {
+          type: "scramble",
+          instructions: "Écoute le mot puis clique les lettres mélangées dans le bon ordre pour le reconstituer !",
+          words: ["chat", "maison", "vélo", "papa", "école", "jardin", "copain", "bébé"]
+        }
       },
       {
         id: "monde",
@@ -121,7 +150,32 @@ const DATA = {
           { type: "text", q: "Quel jour vient après mercredi ?", answer: "jeudi" },
           { type: "qcm", q: "Combien y a-t-il de mois dans une année ?", choices: ["10", "11", "12", "13"], answer: 2 },
           { type: "qcm", q: "En quelle saison fait-il le plus chaud ?", choices: ["l'hiver", "l'été", "l'automne"], answer: 1 }
-        ]
+        ],
+        game: {
+          type: "sort",
+          instructions: "Glisse (ou touche) chaque mot dans le bon panier : une saison, un jour de la semaine ou un mois ?",
+          categories: [
+            { id: "saison", label: "Saison", icon: "🍂" },
+            { id: "jour", label: "Jour", icon: "📅" },
+            { id: "mois", label: "Mois", icon: "🗓️" }
+          ],
+          items: [
+            { label: "🌱 Printemps", category: "saison" },
+            { label: "☀️ Été", category: "saison" },
+            { label: "🍁 Automne", category: "saison" },
+            { label: "❄️ Hiver", category: "saison" },
+            { label: "Lundi", category: "jour" },
+            { label: "Mardi", category: "jour" },
+            { label: "Samedi", category: "jour" },
+            { label: "Dimanche", category: "jour" },
+            { label: "Jeudi", category: "jour" },
+            { label: "Janvier", category: "mois" },
+            { label: "Juillet", category: "mois" },
+            { label: "Décembre", category: "mois" },
+            { label: "Mars", category: "mois" },
+            { label: "Octobre", category: "mois" }
+          ]
+        }
       }
     ]
   },
