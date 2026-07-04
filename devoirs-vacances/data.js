@@ -341,7 +341,19 @@ const DATA = {
           { type: "num", q: "Un fermier a 236 poules. Il en vend 89. Combien lui en reste-t-il ?", answer: 147 },
           { type: "num", q: "7 × 8 = ?", answer: 56 },
           { type: "num", q: "9 × 7 = ?", answer: 63 }
-        ]
+        ],
+        game: {
+          type: "memory",
+          instructions: "Retourne deux cartes pour trouver un calcul et son résultat !",
+          pairs: [
+            { a: "4 567 + 2 345", b: "6 912" },
+            { a: "8 000 − 3 456", b: "4 544" },
+            { a: "84 ÷ 4", b: "21" },
+            { a: "100 × 10", b: "1 000" },
+            { a: "7 × 8", b: "56" },
+            { a: "9 × 7", b: "63" }
+          ]
+        }
       }
     ]
   }
